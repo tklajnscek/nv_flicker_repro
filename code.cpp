@@ -114,7 +114,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     ID3DBlob* vsBlob;
-    D3DCompileFromFile(L"shaders.hlsl", nullptr, nullptr, "vs_main", "vs_5_0", 0, 0, &vsBlob, nullptr);
+    ID3DBlob* errBlob = 0;
+    D3DCompileFromFile(L"shaders.hlsl", nullptr, nullptr, "vs_main", "vs_5_0", 0, 0, &vsBlob, &errBlob);
+    if (errBlob) {
+        MessageBox(0, (const char*)errBlob->GetBufferPointer(), "VS COMPILE FAILED", MB_OK);
+        return 0;
+    }
 
     ID3D11VertexShader* vertexShader;
 
@@ -133,7 +138,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     ID3DBlob* psBlob;
 
-    D3DCompileFromFile(L"shaders.hlsl", nullptr, nullptr, "ps_main", "ps_5_0", 0, 0, &psBlob, nullptr);
+    D3DCompileFromFile(L"shaders.hlsl", nullptr, nullptr, "ps_main", "ps_5_0", 0, 0, &psBlob, &errBlob);
+    if (errBlob) {
+        MessageBox(0, (const char*)errBlob->GetBufferPointer(), "VS COMPILE FAILED", MB_OK);
+        return 0;
+    }
 
     ID3D11PixelShader* pixelShader;
 
