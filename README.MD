@@ -5,7 +5,49 @@ https://bugs.chromium.org/p/chromium/issues/detail?id=836788
 
 I originally hit this bug in GL code running via ANGLE (which inserts the unused interpolator for internal use), but it also fails with vanilla DX11 as demonstrated by the attached repro.
 
-Build the app and run it and you should see it flicker.
-Then go into shader.hlsl and swap out the commented lines in the pixel shader and it should stop flickering.
+You can try it with the precompiled binaries or build the solution from source (it should just build out of the box with Visual Studio).
 
-Tested on multiple nvidia GPUs.
+
+nv_flicker_repro.exe will flicker.
+It uses this shader:
+
+    vs_out vs_main(vs_in input)
+    {
+        vs_out output;
+        output.position = float4(input.position.xyz + FLT_EPSILON, 1.0);
+        output.out1 = float4(input.position.xyz, 1.0);
+        
+        // This doesn't work - it flickers
+        output.out2 = float4(input.position.xyz, 1.0);
+        // But this does - adding some math to the output stops the flickering 
+        // output.out2 = float4(input.position.xyz + FLT_EPSILON, 1.0);
+    
+        return output;
+    }
+
+nv_flicker_repro_war.exe shouldn't flicker.
+It uses this shader:
+
+    vs_out vs_main(vs_in input)
+    {
+        vs_out output;
+        output.position = float4(input.position.xyz + FLT_EPSILON, 1.0);
+        output.out1 = float4(input.position.xyz, 1.0);
+        
+        // This doesn't work - it flickers
+        // output.out2 = float4(input.position.xyz, 1.0);
+        // But this does - adding some math to the output stops the flickering 
+        output.out2 = float4(input.position.xyz + FLT_EPSILON, 1.0);
+    
+        return output;
+    }
+
+The only difference being the `+ FLT_EPSILON` in the workaround version.
+
+If you're building from source swap the lines in the shader and re-run to see the result.
+
+
+Tested on multiple nvidia GPUs:
+- GTX 980M
+- RTX 2060
+- NVIDIA Quadro M2000M
