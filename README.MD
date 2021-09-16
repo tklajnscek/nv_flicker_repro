@@ -7,8 +7,8 @@ I originally hit this bug in GL code running via ANGLE (which inserts the unused
 
 You can try it with the precompiled binaries or build the solution from source (it should just build out of the box with Visual Studio).
 
+Run nv_flicker_repro.exe or from VS and it should flicker by default
 
-nv_flicker_repro.exe will flicker.
 It uses this shader:
 
     vs_out vs_main(vs_in input)
@@ -25,8 +25,8 @@ It uses this shader:
         return output;
     }
 
-nv_flicker_repro_war.exe shouldn't flicker.
-It uses this shader:
+Then open shaders.hlsl and change the vertex shader to use the other, previously commented out line and re-run the exe.
+This shouldn't flicker anymore.
 
     vs_out vs_main(vs_in input)
     {
@@ -43,9 +43,6 @@ It uses this shader:
     }
 
 The only difference being the `+ FLT_EPSILON` in the workaround version.
-
-If you're building from source swap the lines in the shader and re-run to see the result.
-
 
 Tested on multiple nvidia GPUs:
 - GTX 980M

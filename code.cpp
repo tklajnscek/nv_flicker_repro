@@ -15,15 +15,35 @@
 
 #define TITLE "Minimal D3D11 by d7samurai"
 
+LRESULT CALLBACK WndProc(HWND hWnd, UINT nMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (nMsg)
+    {
+    case WM_CLOSE:
+        // Sends us a WM_DESTROY
+        DestroyWindow(hWnd);
+        return 0;
+
+    case WM_DESTROY:
+        // Send a WM_QUIT to the main loop, ends the loop and returns from WinMain
+        PostQuitMessage(0);
+        return 0;
+
+    default:
+        // Let Windows take care of the other messages
+        return DefWindowProc(hWnd, nMsg, wParam, lParam);
+    }
+}
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
     WNDCLASSEXA wndClassEx = { sizeof(wndClassEx) };
-    wndClassEx.lpfnWndProc   = DefWindowProcA;
+    wndClassEx.lpfnWndProc   = WndProc;
     wndClassEx.lpszClassName = TITLE;
 
     RegisterClassExA(&wndClassEx);
 
-    HWND window = CreateWindowExA(0, TITLE, TITLE, WS_OVERLAPPED | WS_VISIBLE, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, nullptr, nullptr);
+    HWND window = CreateWindowExA(0, TITLE, TITLE, WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, nullptr, nullptr);
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -183,14 +203,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     D3D11_VIEWPORT viewport = { 0.0f, 0.0f, (float)backBufferDesc.Width, (float)backBufferDesc.Height, 0.0f, 1.0f };
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
-
     while (true)
     {
         MSG msg;
 
-        while (PeekMessageA(&msg, nullptr, 0, 0, PM_REMOVE))
+        while (PeekMessageA(&msg, 0, 0, 0, PM_REMOVE))
         {
-            if (msg.message == WM_KEYDOWN) return 0;
+            if (msg.message == WM_QUIT)
+                return 0;
             DispatchMessageA(&msg);
         }
 
