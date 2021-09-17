@@ -3,6 +3,9 @@ Looks like a specific combination of a vertex and pixel shader causes the interp
 It's also very reminiscent of this which is supposed to be fixed
 https://bugs.chromium.org/p/chromium/issues/detail?id=836788
 
+Nvidia bug report opened here:
+https://developer.nvidia.com/nvidia_bug/3381217
+
 I originally hit this bug in GL code running via ANGLE (which inserts the unused interpolator for internal use), but it also fails with vanilla DX11 as demonstrated by the attached repro.
 
 You can try it with the precompiled binaries or build the solution from source (it should just build out of the box with Visual Studio).
